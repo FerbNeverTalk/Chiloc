@@ -1,5 +1,3 @@
-import urllib.request
-
 def city_code_init():
 	"""
 	This function initiate the very first csv file of city code,

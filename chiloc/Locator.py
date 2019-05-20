@@ -1,3 +1,11 @@
+from Chiloc import Chiloc
+import helper
+import numpy as np
+import pandas as pd 
+import json
+from urllib.request import urlopen, quote
+import os 
+
 class CityLocator(Chiloc):
 	"""
 	"""
@@ -9,20 +17,18 @@ class CityLocator(Chiloc):
 		self.city = place_city
 		
 		
-	
 	def distance(self, other):
 		
-
 		url = 'http://api.map.baidu.com/directionlite/v1/walking'
 		ak = 'H3bQs5XVuBaLnoQ3CvIzZUiEYrr5Bym4'
 		
-		url = url + '?' + 'origin=' + str(getlnglat(self.name)[1]) +',' + str(getlnglat(self.name)[0]) 
-		+ '&destination=' + str(getlnglat(other.name)[1]) + ',' + str(getlnglat(other.name)[0]) + '&ak=' + ak
+		url = (url + '?' + 'origin=' + str(self.lat) +',' + str(self.lng) 
+		+ '&destination=' + str(other.lat) + ',' + str(other.lng) + '&ak=' + ak)
 		
 		req = urlopen(url)
 		# decode as unicode
 		res = req.read().decode()
-		json = temp.loads(res)
+		temp = json.loads(res)
 		
 		try:
 			distance = temp['result']['routes'][0]['distance']
@@ -35,23 +41,32 @@ class CityLocator(Chiloc):
 	def nearest(self, object_ask, radius = 2000):
 		
 		ak = 'H3bQs5XVuBaLnoQ3CvIzZUiEYrr5Bym4'
-		url = ('http://api.map.baidu.com/place/v2/search?query=' + object_ask + '&location=' + str(self.lat) 
+		object_quote = quote(object_ask)
+		url = ('http://api.map.baidu.com/place/v2/search?query=' + object_quote + '&location=' + str(self.lat) 
 		+ ',' + str(self.lng) + '&radius=' + str(radius) + '&output=json&ak=' + ak)
 		
-		req = urllib.request.urlopen(url)
+		req = urlopen(url)
 		res = req.read().decode()
 		temp = json.loads(res)
 		
-		nearest = temp['results'][0]
-		name = nearest['name']
-		address = nearest['address']
-		district = nearest['district']
-		
-		object = name + object_ask
-		distance = self.distance(CityLocator(object))
+		try:
+			name = temp['results'][0]['name']
+			address = temp['results'][0]['address']
+			district = temp['results'][0]['area']
+			object_ = object_ask + ' - ' + name
+			distance = self.distance(CityLocator(object_ask + name))
 
-		print(f'The nearest {object_ask} is {name} and it locates at {district}, {address} with the distance {distance}m.')
-	
+			print(f'The nearest {object_ask} is {object_} and it locates at {district}, {address} with the distance {distance} m.')
+		
+		except:
+			print(f'Oops! It is considered that there is no any {object_ask}-like facility within {radius}m. Maybe we can try a greater radius.')
+		
+			name = ''
+			address = ''
+			district = ''
+			distance = ''
+		
+		return name, address, district, distance
 	
 	def subway_initiator(self):
 		
@@ -60,9 +75,9 @@ class CityLocator(Chiloc):
 		city_code = pd.read_csv('City_codes.csv', encoidng = 'gbk')
 		code = city_code[city_code['City'] == self.city]['Code']
 		
-		req = urllib.request.urlopen('http://map.baidu.com/?qt=bsi&c='+ code + '&t=123457788')
+		req = urlopen('http://map.baidu.com/?qt=bsi&c='+ code + '&t=123457788')
 		res = req.read().decode()
-		json = temp.loads(response)
+		temp = json.loads(response)
 		
 		# Create subway dataframe 
 		
@@ -96,5 +111,13 @@ class CityLocator(Chiloc):
 		subway['lng'] = lngs
 		
 		print(f'The subway data of {self.city} is generated!')
+		
+		try:
+			os.mkdir('./subway_data')
+		except:
+			pass
+		
+		path = './subway_data/' + self.city + '_subway.csv'
+		subway.to_csv(path, index = False)
 		
 			
