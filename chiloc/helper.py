@@ -1,3 +1,9 @@
+import pandas as pd
+import numpy as np
+import json
+from urllib.request import urlopen, quote
+import os 
+
 def city_code_init():
 	"""
 	This function initiate the very first csv file of city code,
@@ -9,13 +15,13 @@ def city_code_init():
 		City_codes.csv: A .csv file that gathers cities and codes world-widely.
 	"""
 	
-	req = urllib.request.urlopen('http://map.baidu.com/?qt=subwayscity&t=123457788')
+	req = urlopen('http://map.baidu.com/?qt=subwayscity&t=123457788')
 	res = req.read().decode()
-	json = json.load(res)
+	temp = json.loads(res)
 	
 	city_code_list = pd.DataFrame()
 	city_code_list['City'], city_code_list['Code'] =  np.nan, np.nan
-	cities = json['subways_city']['cities']
+	cities = temp['subways_city']['cities']
 
 	city, code = [], []
 

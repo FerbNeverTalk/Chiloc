@@ -1,4 +1,5 @@
+from .Chiloc import Chiloc
 from .Locator import CityLocator
-import helper 
+from .helper import city_code_init
 
-helper.city_code_init()
+city_code_init()

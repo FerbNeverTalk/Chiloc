@@ -55,6 +55,6 @@ class Chiloc():
 	
 	def __repr__(self):
 	
-		return f'Place: {self.name}, lng: {self.lng}, lat: {self.lat}'
+		return 'Place: {}, lng: {}, lat: {}'.format(self.name, self.lng, self.lat)
 	
 	

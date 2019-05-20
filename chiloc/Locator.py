@@ -1,5 +1,5 @@
-from Chiloc import Chiloc
-import helper
+from .Chiloc import Chiloc
+from .helper import city_code_init
 import numpy as np
 import pandas as pd 
 import json
@@ -56,10 +56,10 @@ class CityLocator(Chiloc):
 			object_ = object_ask + ' - ' + name
 			distance = self.distance(CityLocator(object_ask + name))
 
-			print(f'The nearest {object_ask} is {object_} and it locates at {district}, {address} with the distance {distance} m.')
+			print('The nearest {} is {} and it locates at {}, {} with the distance {} m.'.format(object_ask, object_, district, address, distance))
 		
 		except:
-			print(f'Oops! It is considered that there is no any {object_ask}-like facility within {radius}m. Maybe we can try a greater radius.')
+			print('Oops! It is considered that there is no any {}-like facility within {}m. Maybe we can try a greater radius.'.format(object_ask, radius))
 		
 			name = ''
 			address = ''
@@ -71,7 +71,7 @@ class CityLocator(Chiloc):
 	def subway_initiator(self):
 		
 		print('Initialization...')
-		print(f'Track the citycode for {self.city}')
+		print('Track the citycode for {}'.format(self.city))
 		city_code = pd.read_csv('City_codes.csv', encoidng = 'gbk')
 		code = city_code[city_code['City'] == self.city]['Code']
 		
@@ -81,7 +81,7 @@ class CityLocator(Chiloc):
 		
 		# Create subway dataframe 
 		
-		print(f'Generating the subway data in {self.city}.')
+		print('Generating the subway data in {}.'.format(self.city))
 		subway = pd.DataFrame()
 		subway['Stop'], subway['Line'], subway['lat'], subway['lng'] = np.nan, np.nan, np.nan, np.nan
 		
@@ -89,7 +89,7 @@ class CityLocator(Chiloc):
 		
 		for i in range(len(temp['content'])):
 			line = temp['content'][i]['line_name']
-			print(f'Loading for {line}:')
+			print('Loading for {}:'.format(line))
 			for j in range(len(temp['content'][i]['stops'])):
 				stop = temp['content'][i]['stops'][j]['name']
 				stops.append(stop)
@@ -98,11 +98,11 @@ class CityLocator(Chiloc):
 				try:
 					lats.append(getlnglat(stop + ' - 地铁站')[0])
 					lngs.append(getlnglat(stop + ' - 地铁站')[1])
-					print(f'	- {stop} is loaded.')
+					print('	- {} is loaded.'.format(stop))
 				except: 
 					lats.append(np.nan)
 					lngs.append(np.nan)
-					print(f'	- Fails to load {stop} for some reason.')
+					print('	- Fails to load {} for some reason.'.format(stop))
 				
 
 		subway['Stop'] = stops
@@ -110,7 +110,7 @@ class CityLocator(Chiloc):
 		subway['lat'] = lats
 		subway['lng'] = lngs
 		
-		print(f'The subway data of {self.city} is generated!')
+		print('The subway data of {} is generated!'.format(self.city))
 		
 		try:
 			os.mkdir('./subway_data')
