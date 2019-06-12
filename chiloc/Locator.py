@@ -85,7 +85,7 @@ class CityLocator(Chiloc):
 			name = ''
 			address = ''
 			district = ''
-			dist = ''
+			distance = ''
 		
 		return name, address, district, distance
 	
