@@ -1,5 +1,5 @@
 from .Chiloc import Chiloc
-from .helper import city_code_init
+#from .helper import city_code_init
 import numpy as np
 import pandas as pd 
 import json
@@ -8,10 +8,30 @@ import os
 
 class CityLocator(Chiloc):
 	"""
+	A child class of Chiloc. It focus on city-scope and it help to find the distance 
+	between two places and search for facilities around a given place.
+	
+	Plus, it offers a initiation of subways stop data all over the world.
+	
+	
+	Attributes:
+		name(string): representing the name of the location.
+		lng(float): representing the longitude of the location.
+		lat(float): representing the latitude of the location.
+		city(string): representing the city of the location.
 	"""
 	
 	def __init__(self, place_name = '北京大学国家发展研究院', place_city = '北京市'):
-	
+		"""
+		The instantiate function.
+		
+		Args: 
+			place_name(string): the name of the location, default is  '北京大学国家发展研究院'
+			place_city(string): the city of the location, default is '北京市'
+		
+		Returns:
+			None
+		"""
 		Chiloc.__init__(self, place_name)
 		self.name = place_city + ' ' + self.name
 		self.city = place_city
@@ -31,11 +51,11 @@ class CityLocator(Chiloc):
 		temp = json.loads(res)
 		
 		try:
-			distance = temp['result']['routes'][0]['distance']
+			dist = temp['result']['routes'][0]['distance']
 		except:
-			pass
+			dist = np.nan
 		
-		return distance
+		return dist
 	
 	
 	def nearest(self, object_ask, radius = 2000):
@@ -54,9 +74,9 @@ class CityLocator(Chiloc):
 			address = temp['results'][0]['address']
 			district = temp['results'][0]['area']
 			object_ = object_ask + ' - ' + name
-			distance = self.distance(CityLocator(object_ask + name))
+			dist = self.distance(CityLocator(object_ask + name))
 
-			print('The nearest {} is {} and it locates at {}, {} with the distance {} m.'.format(object_ask, object_, district, address, distance))
+			print('The nearest {} is {} and it locates at {}, {} with the distance {} m.'.format(object_ask, object_, district, address, dist))
 		
 		except:
 			print('Oops! It is considered that there is no any {}-like facility within {}m. Maybe we can try a greater radius.'.format(object_ask, radius))
@@ -64,9 +84,9 @@ class CityLocator(Chiloc):
 			name = ''
 			address = ''
 			district = ''
-			distance = ''
+			dist = ''
 		
-		return name, address, district, distance
+		return name, address, district, dist
 	
 	def subway_initiator(self):
 		
