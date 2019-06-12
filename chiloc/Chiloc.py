@@ -49,8 +49,8 @@ class Chiloc():
 		res = req.read().decode()
 		temp = json.loads(res)
 		
-		lng = temp['result']['location']['lng']
-		lat = temp['result']['location']['lat']
+		lng = temp['results'][0]['location']['lng']
+		lat = temp['results'][0]['location']['lat']
 		
 		return lng, lat
 	
