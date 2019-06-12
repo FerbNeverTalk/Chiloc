@@ -77,7 +77,7 @@ class CityLocator(Chiloc):
 			object_ = object_ask + ' - ' + name
 			distance = temp['results'][0]['detail_info']['distance']
 
-			print('The nearest {} is {} and it locates at {}, {} with the distance {} m.'.format(object_ask, object_, district, address, dist))
+			print('The nearest {} is {} and it locates at {}, {} with the distance {} m.'.format(object_ask, object_, district, address, distance))
 		
 		except:
 			print('Oops! It is considered that there is no any {}-like facility within {}m. Maybe we can try a greater radius.'.format(object_ask, radius))
@@ -87,7 +87,7 @@ class CityLocator(Chiloc):
 			district = ''
 			dist = ''
 		
-		return name, address, district, dist
+		return name, address, district, distance
 	
 	def subway_initiator(self):
 		
