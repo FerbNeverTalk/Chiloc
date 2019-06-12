@@ -21,7 +21,7 @@ class CityLocator(Chiloc):
 		city(string): representing the city of the location.
 	"""
 	
-	def __init__(self, place_name = '北京大学国家发展研究院', place_city = '北京市'):
+	def __init__(self, place_city, place_name = '北京大学国家发展研究院'):
 		"""
 		The instantiate function.
 		
@@ -32,9 +32,8 @@ class CityLocator(Chiloc):
 		Returns:
 			None
 		"""
-		Chiloc.__init__(self, place_name)
+		Chiloc.__init__(self, place_name = place_name, city = place_city)
 		self.name = place_city + ' ' + self.name
-		self.city = place_city
 		
 		
 	def distance(self, other):
@@ -63,7 +62,9 @@ class CityLocator(Chiloc):
 		ak = 'H3bQs5XVuBaLnoQ3CvIzZUiEYrr5Bym4'
 		object_quote = quote(object_ask)
 		url = ('http://api.map.baidu.com/place/v2/search?query=' + object_quote + '&location=' + str(self.lat) 
-		+ ',' + str(self.lng) + '&radius=' + str(radius) + '&output=json&ak=' + ak)
+		+ ',' + str(self.lng) + '&radius=' + str(radius) 
+		+ '&scope=2' + '&filter=sort_name:distance|sort_rule:1'
+		+ '&output=json&ak=' + ak)
 		
 		req = urlopen(url)
 		res = req.read().decode()
@@ -74,7 +75,7 @@ class CityLocator(Chiloc):
 			address = temp['results'][0]['address']
 			district = temp['results'][0]['area']
 			object_ = object_ask + ' - ' + name
-			dist = self.distance(CityLocator(object_ask + name))
+			distance = temp['results'][0]['detail_info']['distance']
 
 			print('The nearest {} is {} and it locates at {}, {} with the distance {} m.'.format(object_ask, object_, district, address, dist))
 		

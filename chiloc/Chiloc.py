@@ -16,7 +16,7 @@ class Chiloc():
 		lat(float): representing the latitude of the location.
 	"""
 
-	def __init__(self, place_name = '北京大学国家发展研究院'):
+	def __init__(self, place_name = '北京大学国家发展研究院', city = '北京'):
 		"""
 		The instantiate function. 
 		
@@ -28,6 +28,7 @@ class Chiloc():
 		"""
 
 		self.name = place_name
+		self.city = city
 		self.lng = self.getlnglat(self.name)[0]
 		self.lat = self.getlnglat(self.name)[1]
 		
@@ -36,12 +37,13 @@ class Chiloc():
 		
 		"""
 		
-		url = 'http://api.map.baidu.com/geocoder/v2/'
+		url = 'http://api.map.baidu.com/place/v2/search?query='
 		output = 'json'
 		ak = 'H3bQs5XVuBaLnoQ3CvIzZUiEYrr5Bym4'
 		# re-code mandrian
 		add = quote(place_name) 
-		url = url + '?' + 'address=' + add + '&output=' + output + '&ak=' + ak
+		region = quote(self.city)
+		url = url + add + '&region=' + region + '&output=' + output + '&ak=' + ak
 		req = urlopen(url)
 		# decode as unicode 
 		res = req.read().decode()
