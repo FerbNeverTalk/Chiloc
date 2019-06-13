@@ -22,6 +22,7 @@ class Chiloc():
 		
 		Args: 
 			place_name(string): the name of the location, default is  '北京大学国家发展研究院'
+			city(string): Default is '北京'. Notice that it is not suggested to change.
 		
 		Return:
 			None
@@ -34,7 +35,15 @@ class Chiloc():
 		
 	def getlnglat(self, place_name):
 		"""
+		This function aims to get the longitude and latitude for a given place name,
+		rather than a detailed address. 
 		
+		Args:
+			place_name(string): the name of a location.
+			
+		Returns:
+			lng: longitude 
+			lat: latitude 
 		"""
 		
 		url = 'http://api.map.baidu.com/place/v2/search?query='

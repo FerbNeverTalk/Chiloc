@@ -1,5 +1,4 @@
 from .Chiloc import Chiloc
-#from .helper import city_code_init
 import numpy as np
 import pandas as pd 
 import json
@@ -23,11 +22,11 @@ class CityLocator(Chiloc):
 	
 	def __init__(self, place_city, place_name = '北京大学国家发展研究院'):
 		"""
-		The instantiate function.
+		The instantiate function. If any, it is suggested to change the city in this function. 
 		
 		Args: 
-			place_name(string): the name of the location, default is  '北京大学国家发展研究院'
-			place_city(string): the city of the location, default is '北京市'
+			place_name(string): the name of the location, optional and default is  '北京大学国家发展研究院'
+			place_city(string): the city of the location, necessarily.
 		
 		Returns:
 			None
@@ -37,6 +36,16 @@ class CityLocator(Chiloc):
 		
 		
 	def distance(self, other):
+		"""
+		This function returns the walking distance between two places. 
+		Notice that we have to instantiate two CityLocator variables. 
+		
+		Args: 
+			other 
+			
+		Returns: 
+			distance (in meter).
+		"""
 		
 		url = 'http://api.map.baidu.com/directionlite/v1/walking'
 		ak = 'H3bQs5XVuBaLnoQ3CvIzZUiEYrr5Bym4'
@@ -57,7 +66,7 @@ class CityLocator(Chiloc):
 		return dist
 	
 	
-	def nearest(self, object_ask, radius = 2000):
+	def nearest(self, object_ask, radius = 2000, notice = True):
 		
 		ak = 'H3bQs5XVuBaLnoQ3CvIzZUiEYrr5Bym4'
 		object_quote = quote(object_ask)
@@ -76,8 +85,10 @@ class CityLocator(Chiloc):
 			district = temp['results'][0]['area']
 			object_ = object_ask + ' - ' + name
 			distance = temp['results'][0]['detail_info']['distance']
+			
+			if notice:
 
-			print('The nearest {} is {} and it locates at {}, {} with the distance {} m.'.format(object_ask, object_, district, address, distance))
+				print('The nearest {} is {} and it locates at {}, {} with the distance {} m.'.format(object_ask, object_, district, address, distance))
 		
 		except:
 			print('Oops! It is considered that there is no any {}-like facility within {}m. Maybe we can try a greater radius.'.format(object_ask, radius))
